@@ -18,15 +18,13 @@ function ChatRoom(props) {
                 </li>
             )}
             </SideBar>
-            
-            
         </div>
     );
 }
 
 const SideBar = styled.div`
     background: red;
-
+    float: left;
 `
 
 export default ChatRoom;
