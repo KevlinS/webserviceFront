@@ -11,8 +11,9 @@ function FormComponent(props) {
     };
 
     const handleSubmit = (event) => {
-        alert('Le nom a été soumis : ' + username);
+        
         event.preventDefault();
+        window.location.href = '/chatroom'
     };
 
 
