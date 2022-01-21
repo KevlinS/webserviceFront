@@ -1,18 +1,40 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from 'styled-components'
+import { useHistory } from "react-router-dom";
 
 function FormComponent(props) {
 
+    const history = useHistory();
     const [username, setUserame] = useState("");
+    const [data, setData] = useState({})
+    let info = {
+        port: 3000,
+        name: username,
+        host: "localhost"
+    };
+
 
     const handleChange = (event) => {
         setUserame(event.target.value);
     };
 
     const handleSubmit = (event) => {
-        alert('Le nom a été soumis : ' + username);
+       
+        const url = 'http://localhost:8000/register';
+      fetch(url, {
+         mode: 'no-cors',
+         body:JSON.stringify(info),
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json;charset=utf-8'
+         }
+      }).then(res => {
+         setData(res.data)
+      });
+      console.log(data)
         event.preventDefault();
+        history.push("/chatroom")
     };
 
 
@@ -23,7 +45,7 @@ function FormComponent(props) {
                 <label>
           <InputForm type="text" value={username} onChange={handleChange} />
                 </label>
-                <InputForm type="submit" value="SUBMIT" />
+                <InputForm type="submit" value="CONNECT" />
             </Wrapper>
 
     );

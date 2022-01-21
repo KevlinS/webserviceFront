@@ -3,10 +3,8 @@ import Form from "../../components/Form"
 
 function Home(props) {
 
-  
-
     return (
-            <Form/>
+        <Form/>
     );
 }
 
