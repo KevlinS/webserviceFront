@@ -16,8 +16,8 @@ const ChatRoom = () => {
 
     const Logout = (event) => {
         event.preventDefault();
-        for (var i=0; i < data.length; i++) {
-            if(data[i].port == portClient) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].port == portClient) {
                 console.log(data[i].name)
                 const url = `http://localhost:${portServer}/logout`;
                 const info = {
@@ -26,26 +26,26 @@ const ChatRoom = () => {
                     host: "localhost"
                 }
                 fetch(url, {
-                            mode: 'no-cors',
-                            body: JSON.stringify(info),
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json;charset=utf-8'
-                            }
-                        }).then(res => {
-                            setData(res.data)
-                        });
-                        event.preventDefault();
-                        history.push('/');
-                        alert("vous êtes déconnecté")
-            }     
-        }      
+                    mode: 'no-cors',
+                    body: JSON.stringify(info),
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    }
+                }).then(res => {
+                    setData(res.data)
+                });
+                event.preventDefault();
+                history.push('/');
+                alert("vous êtes déconnecté")
+            }
+        }
     }
 
 
     const setNewMessage = (msg) => {
-        for (var i=0; i < data.length; i++) {
-            if(data[i].port == portClient) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].port == portClient) {
                 setOwnerName(data[i].name)
             }
         }
@@ -67,7 +67,7 @@ const ChatRoom = () => {
     }
 
     const handleSort = (event, value) => {
-        if(value) {
+        if (value) {
             setWithWho(value.name)
             console.log(value.name)
         }
@@ -80,7 +80,7 @@ const ChatRoom = () => {
         await fetch(url).then(res => {
             res.json().then((user) => {
                 setData(user.data);
-                
+
             });
         });
     }
@@ -103,21 +103,21 @@ const ChatRoom = () => {
 
             <WrapperChat>
                 <Menu>
-                    <p >Welcome,<b></b></p>
-                    <p ><Exit href="#" onClick={Logout}>Exit Chat</Exit></p>
+                    <p >Bienvenue,<b></b></p>
+                    <p ><Exit href="#" onClick={Logout}>Déconnexion</Exit></p>
                     <Both ></Both>
                 </Menu>
                 <ChatBox>
                     {messages.map(msg => {
                         return (
-                        <div key={uniqid()}>{ownerName}: {msg.text} </div>
+                            <div key={uniqid()}>{ownerName}: {msg.text} </div>
                         )
                     })}
                 </ChatBox>
 
                 <FormChat onSubmit={sendMessage}>
                     <UserMsg id="text" type="text" size="63" />
-                    <Submit type="submit" value="Send" />
+                    <Submit type="submit" value="Envoyer" />
                 </FormChat>
             </WrapperChat>
         </Wrapper>

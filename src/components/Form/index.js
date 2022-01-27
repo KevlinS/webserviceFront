@@ -52,7 +52,7 @@ function FormComponent(props) {
 
     return (
         <Wrapper onSubmit={handleSubmit}>
-            <h1>USERNAME</h1>
+            <h1>Nom d'utilisateur : </h1>
             <label>
                 <InputForm type="text" value={username} onChange={handleName} />
             </label>
