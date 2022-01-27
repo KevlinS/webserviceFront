@@ -7,44 +7,61 @@ function FormComponent(props) {
 
     const history = useHistory();
     const [username, setUserame] = useState("");
-    const [data, setData] = useState({})
+    const [portServer, setPortServer] = useState("");
+    const [data, setData] = useState({});
+    const portClient = window.location.port;
+ 
+
+   
     let info = {
-        port: 3000,
+        port: portClient,
         name: username,
         host: "localhost"
     };
 
 
-    const handleChange = (event) => {
+    const handleName= (event) => {
         setUserame(event.target.value);
+        
     };
 
+    const handlePort = (event) => {
+        setPortServer(event.target.value);
+        
+    };
+
+
     const handleSubmit = (event) => {
-       
-        const url = 'http://localhost:8000/register';
-      fetch(url, {
-         mode: 'no-cors',
-         body:JSON.stringify(info),
-         method: 'POST',
-         headers: {
-             'Content-Type': 'application/json;charset=utf-8'
-         }
-      }).then(res => {
-         setData(res.data)
-      });
-      console.log(data)
+
+        const url = `http://localhost:${portServer}/register`;
+        fetch(url, {
+            mode: 'no-cors',
+            body: JSON.stringify(info),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        }).then(res => {
+            setData(res.data)
+        });
+        console.log(data)
         event.preventDefault();
+        sessionStorage.setItem("portServer", portServer);
         history.push("/chatroom")
     };
 
     return (
-            <Wrapper onSubmit={handleSubmit}>
-                <h1>USERNAME</h1>
-                <label>
-          <InputForm type="text" value={username} onChange={handleChange} />
-                </label>
-                <InputForm type="submit" value="CONNECT" />
-            </Wrapper>
+        <Wrapper onSubmit={handleSubmit}>
+            <h1>USERNAME</h1>
+            <label>
+                <InputForm type="text" value={username} onChange={handleName} />
+            </label>
+            <h1>se connecter sur le port :</h1>
+            <label>
+                <InputForm type="text" value={portServer} onChange={handlePort} />
+            </label>
+            <InputForm type="submit" value="CONNECT" />
+        </Wrapper>
 
     );
 }

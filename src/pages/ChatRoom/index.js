@@ -11,15 +11,17 @@ const ChatRoom = () => {
     const [ownerName, setOwnerName] = useState('');
     const [withWho, setWithWho] = useState('');
     const history = useHistory();
+    const portClient = window.location.port;
+    const portServer = sessionStorage.getItem('portServer');
 
     const Logout = (event) => {
         event.preventDefault();
         for (var i=0; i < data.length; i++) {
-            if(data[i].port == 3000) {
+            if(data[i].port == portClient) {
                 console.log(data[i].name)
-                const url = 'http://localhost:8000/logout';
+                const url = `http://localhost:${portServer}/logout`;
                 const info = {
-                    port: 3000,
+                    port: portClient,
                     name: data[i].name,
                     host: "localhost"
                 }
@@ -43,7 +45,7 @@ const ChatRoom = () => {
 
     const setNewMessage = (msg) => {
         for (var i=0; i < data.length; i++) {
-            if(data[i].port == 3000) {
+            if(data[i].port == portClient) {
                 setOwnerName(data[i].name)
             }
         }
@@ -74,10 +76,11 @@ const ChatRoom = () => {
 
     const ListUsers = async () => {
 
-        const url = 'http://localhost:8000/users';
+        const url = `http://localhost:${portServer}/users`;
         await fetch(url).then(res => {
             res.json().then((user) => {
                 setData(user.data);
+                
             });
         });
     }
@@ -101,7 +104,7 @@ const ChatRoom = () => {
             <WrapperChat>
                 <Menu>
                     <p >Welcome,<b></b></p>
-                    <p ><a href="#" onClick={Logout}>Exit Chat</a></p>
+                    <p ><Exit href="#" onClick={Logout}>Exit Chat</Exit></p>
                     <Both ></Both>
                 </Menu>
                 <ChatBox>
@@ -178,6 +181,9 @@ const Submit = styled.input`
 width: 60px;
 
 `
+const Exit = styled.a`
+    color: red;
 
+`
 export default ChatRoom;
 
