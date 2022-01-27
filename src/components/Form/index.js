@@ -60,7 +60,7 @@ function FormComponent(props) {
             <label>
                 <InputForm type="text" value={portServer} onChange={handlePort} />
             </label>
-            <InputForm type="submit" value="CONNECT" />
+            <InputForm type="submit" value="CONNEXION" />
         </Wrapper>
 
     );
