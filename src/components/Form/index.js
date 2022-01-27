@@ -37,8 +37,6 @@ function FormComponent(props) {
         history.push("/chatroom")
     };
 
-
-
     return (
             <Wrapper onSubmit={handleSubmit}>
                 <h1>USERNAME</h1>

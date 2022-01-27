@@ -2,54 +2,89 @@ import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import uniqid from "uniqid";
-import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const ChatRoom = () => {
 
     const [messages, setMessages] = useState([]);
     const [data, setData] = useState([]);
+    const [ownerName, setOwnerName] = useState('');
+    const [withWho, setWithWho] = useState('');
+    const history = useHistory();
 
-    const Logout = () => {
-
-        window.location.href = '/'
+    const Logout = (event) => {
+        event.preventDefault();
+        for (var i=0; i < data.length; i++) {
+            if(data[i].port == 3000) {
+                console.log(data[i].name)
+                const url = 'http://localhost:8000/logout';
+                const info = {
+                    port: 3000,
+                    name: data[i].name,
+                    host: "localhost"
+                }
+                fetch(url, {
+                            mode: 'no-cors',
+                            body: JSON.stringify(info),
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json;charset=utf-8'
+                            }
+                        }).then(res => {
+                            setData(res.data)
+                        });
+                        event.preventDefault();
+                        history.push('/');
+                        alert("vous êtes déconnecté")
+            }     
+        }      
     }
 
+
     const setNewMessage = (msg) => {
+        for (var i=0; i < data.length; i++) {
+            if(data[i].port == 3000) {
+                setOwnerName(data[i].name)
+            }
+        }
         setMessages([
-          ...messages,
-          msg
+            ...messages,
+            msg
         ]);
-      }
+    }
 
     const sendMessage = (event) => {
         event.preventDefault();
         const msg = {
-            text: event.target.text.value
-          };
-          setNewMessage(msg);
-          event.target.text.value = '';
+            text: event.target.text.value,
+            from: ownerName,
+            to: withWho
+        };
+        setNewMessage(msg);
+        event.target.text.value = '';
     }
 
-    const handleSort = value => event => {
-        console.log(value)
+    const handleSort = (event, value) => {
+        if(value) {
+            setWithWho(value.name)
+            console.log(value.name)
+        }
     }
 
-    
+
     const ListUsers = async () => {
 
         const url = 'http://localhost:8000/users';
         await fetch(url).then(res => {
-           res.json().then((user) => {
-              setData(user.data);
+            res.json().then((user) => {
+                setData(user.data);
             });
-            
         });
-
     }
-    
-  useEffect( () => {
-    setInterval(ListUsers,5000);
-  }, []);
+
+    useEffect(() => {
+        setInterval(ListUsers, 5000)
+    }, []);
 
 
     return (
@@ -57,7 +92,7 @@ const ChatRoom = () => {
             <SideBar>
                 {data.map((user) =>
                     <li key={uniqid()}>
-                        <a href="#" onClick={handleSort(user.name)}>{user.name}</a>
+                        <a href="#" onClick={e => handleSort(e, user)}>{user.name}</a>
                     </li>
                 )}
 
@@ -65,20 +100,20 @@ const ChatRoom = () => {
 
             <WrapperChat>
                 <Menu>
-                    <p >Welcome, <b></b></p>
+                    <p >Welcome,<b></b></p>
                     <p ><a href="#" onClick={Logout}>Exit Chat</a></p>
                     <Both ></Both>
                 </Menu>
                 <ChatBox>
-                {messages.map(msg => {
-                    return (
-                        <div key={uniqid()}>{"user"}: {msg.text}</div>
-                    )
-                  })}
+                    {messages.map(msg => {
+                        return (
+                        <div key={uniqid()}>{ownerName}: {msg.text} </div>
+                        )
+                    })}
                 </ChatBox>
 
                 <FormChat onSubmit={sendMessage}>
-                    <UserMsg id="text" type="text"  size="63" />
+                    <UserMsg id="text" type="text" size="63" />
                     <Submit type="submit" value="Send" />
                 </FormChat>
             </WrapperChat>
