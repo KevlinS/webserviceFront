@@ -7,12 +7,14 @@ import { useHistory } from "react-router-dom";
 const ChatRoom = () => {
 
     const [messages, setMessages] = useState([]);
+    const [receiveMessage, setReciveMessage] = useState([]);
     const [data, setData] = useState([]);
     const [ownerName, setOwnerName] = useState('');
     const [withWho, setWithWho] = useState('');
     const history = useHistory();
     const portClient = window.location.port;
-    const portServer = sessionStorage.getItem('portServer');
+    const hostname = window.location.hostname;
+    const portServer = 81;
 
     const Logout = (event) => {
         event.preventDefault();
@@ -23,7 +25,7 @@ const ChatRoom = () => {
                 const info = {
                     port: portClient,
                     name: data[i].name,
-                    host: "localhost"
+                    host: hostname
                 }
                 fetch(url, {
                     mode: 'no-cors',
@@ -37,11 +39,35 @@ const ChatRoom = () => {
                 });
                 event.preventDefault();
                 history.push('/');
-                alert("vous êtes déconnecté")
+                alert("vous êtes déconnecté");
             }
         }
     }
 
+    const myRecieveMessage = () => {
+        const msg = {
+            // text: event.target.text.value,
+            from: ownerName,
+            to: withWho
+        };
+        setReciveMessage(msg);
+        // event.target.text.value = '';
+        
+        
+        // for (var i = 0; i < data.length; i++) {
+        //     if (data[i].port == portClient) {
+        //         setOwnerName(data[i].name)
+        //     }
+        // }
+     
+    }
+
+    const setMyRecieveMessage = (msg) => {
+        setReciveMessage([
+            ...messages,
+            msg
+        ]);
+    } 
 
     const setNewMessage = (msg) => {
         for (var i = 0; i < data.length; i++) {
@@ -57,6 +83,25 @@ const ChatRoom = () => {
 
     const sendMessage = (event) => {
         event.preventDefault();
+
+        var myHeaders = new Headers();
+        myHeaders.append("from", ownerName);
+        myHeaders.append("Content-Type", "text/plain");
+
+        var raw = event.target.text.value
+
+        var requestOptions = {
+            mode: 'no-cors',
+            method: 'POST',
+            headers: myHeaders,
+            body: raw
+        };
+
+        fetch(`http://localhost:${portServer}/chat/${withWho}`, requestOptions)
+            .then(response => response.text())  
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+
         const msg = {
             text: event.target.text.value,
             from: ownerName,
@@ -83,6 +128,10 @@ const ChatRoom = () => {
 
             });
         });
+        messages = {
+            text: "halooo"
+        }
+        setNewMessage(messages)
     }
 
     useEffect(() => {
@@ -113,6 +162,12 @@ const ChatRoom = () => {
                             <div key={uniqid()}>{ownerName}: {msg.text} </div>
                         )
                     })}
+                    {/* {receiveMessage.map(msg => {
+                        return(
+                        <div key={uniqid()}>{withWho} <a>azea</a> </div>
+                        )
+                    })}
+                    <a>{receiveMessage} a</a> */}
                 </ChatBox>
 
                 <FormChat onSubmit={sendMessage}>
@@ -146,7 +201,7 @@ padding:12.5px 25px 12.5px 25px;
 `
 
 const WrapperChat = styled.div`
-margin-right: 40%;
+margin-right: 20%;
 padding-bottom:25px;
 background:#EBF4FB;
 width:504px;

@@ -7,16 +7,16 @@ function FormComponent(props) {
 
     const history = useHistory();
     const [username, setUserame] = useState("");
-    const [portServer, setPortServer] = useState("");
     const [data, setData] = useState({});
     const portClient = window.location.port;
+    const hostname = window.location.hostname;
  
 
-   
+
     let info = {
         port: portClient,
         name: username,
-        host: "localhost"
+        host: hostname
     };
 
 
@@ -25,15 +25,10 @@ function FormComponent(props) {
         
     };
 
-    const handlePort = (event) => {
-        setPortServer(event.target.value);
-        
-    };
-
 
     const handleSubmit = (event) => {
 
-        const url = `http://localhost:${portServer}/register`;
+        const url = `http://localhost:81/register`;
         fetch(url, {
             mode: 'no-cors',
             body: JSON.stringify(info),
@@ -44,9 +39,7 @@ function FormComponent(props) {
         }).then(res => {
             setData(res.data)
         });
-        console.log(data)
         event.preventDefault();
-        sessionStorage.setItem("portServer", portServer);
         history.push("/chatroom")
     };
 
@@ -56,10 +49,7 @@ function FormComponent(props) {
             <label>
                 <InputForm type="text" value={username} onChange={handleName} />
             </label>
-            <h1>se connecter sur le port :</h1>
-            <label>
-                <InputForm type="text" value={portServer} onChange={handlePort} />
-            </label>
+
             <InputForm type="submit" value="CONNEXION" />
         </Wrapper>
 
